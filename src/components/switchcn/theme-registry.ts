@@ -1,4 +1,4 @@
-import { ThemeMeta, Theme } from "./loader";
+import { ThemeMeta, Theme } from "./theme-loader";
 
 export interface RegistryEntry extends ThemeMeta {
   load: () => Promise<{ default: Theme }>;
@@ -14,7 +14,7 @@ export const THEME_REGISTRY: Record<string, RegistryEntry> = {
       "oklch(0.9700 0 0)",
       "oklch(0.9220 0 0)"
     ],
-    load: () => import("./configs/default.json"),
+    load: () => import("./themes/default.json"),
   },
   "amber-minimal": {
     name: "amber-minimal",
@@ -25,7 +25,7 @@ export const THEME_REGISTRY: Record<string, RegistryEntry> = {
       "oklch(0.9869 0.0214 95.2774)",
       "oklch(0.2686 0 0)"
     ],
-    load: () => import("./configs/amber-minimal.json"),
+    load: () => import("./themes/amber-minimal.json"),
   },
   "amethyst-haze": {
     name: "amethyst-haze",
@@ -36,7 +36,7 @@ export const THEME_REGISTRY: Record<string, RegistryEntry> = {
       "oklch(0.7889 0.0802 359.9375)",
       "oklch(0.8447 0.0226 300.1421)"
     ],
-    load: () => import("./configs/amethyst-haze.json"),
+    load: () => import("./themes/amethyst-haze.json"),
   },
   bubblegum: {
     name: "bubblegum",
@@ -47,7 +47,7 @@ export const THEME_REGISTRY: Record<string, RegistryEntry> = {
       "oklch(0.9195 0.0801 87.6670)",
       "oklch(0.6209 0.1801 348.1385)"
     ],
-    load: () => import("./configs/bubblegum.json"),
+    load: () => import("./themes/bubblegum.json"),
   },
   caffeine: {
     name: "caffeine",
@@ -58,7 +58,7 @@ export const THEME_REGISTRY: Record<string, RegistryEntry> = {
       "oklch(0.9310 0 0)",
       "oklch(0.8822 0 0)"
     ],
-    load: () => import("./configs/caffeine.json"),
+    load: () => import("./themes/caffeine.json"),
   },
   candyland: {
     name: "candyland",
@@ -69,7 +69,7 @@ export const THEME_REGISTRY: Record<string, RegistryEntry> = {
       "oklch(0.9680 0.2110 109.7692)",
       "oklch(0.8699 0 0)"
     ],
-    load: () => import("./configs/candyland.json"),
+    load: () => import("./themes/candyland.json"),
   },
   "cosmic-night": {
     name: "cosmic-night",
@@ -80,7 +80,7 @@ export const THEME_REGISTRY: Record<string, RegistryEntry> = {
       "#1e1b4b",
       "#7c3aed"
     ],
-    load: () => import("./configs/cosmic-night.json"),
+    load: () => import("./themes/cosmic-night.json"),
   },
   "rose-pine": {
     name: "rose-pine",
@@ -91,7 +91,7 @@ export const THEME_REGISTRY: Record<string, RegistryEntry> = {
       "#9ccfd8",
       "#191724"
     ],
-    load: () => import("./configs/rose-pine.json"),
+    load: () => import("./themes/rose-pine.json"),
   },
   "tokyo-night": {
     name: "tokyo-night",
@@ -102,7 +102,7 @@ export const THEME_REGISTRY: Record<string, RegistryEntry> = {
       "#9ece6a",
       "#1a1b2e"
     ],
-    load: () => import("./configs/tokyo-night.json"),
+    load: () => import("./themes/tokyo-night.json"),
   },
   claudeplus: {
     name: "claudeplus",
@@ -113,7 +113,7 @@ export const THEME_REGISTRY: Record<string, RegistryEntry> = {
       "oklch(0.9245 0.0138 92.9892)",
       "oklch(0.8847 0.0069 97.3627)"
     ],
-    load: () => import("./configs/claudeplus.json"),
+    load: () => import("./themes/claudeplus.json"),
   },
 };
 

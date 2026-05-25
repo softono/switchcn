@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ThemeSwitcher } from "@/theme";
+import { ThemeSwitcher } from "@/components/switchcn";
 
 // ─── SVG path helper ──────────────────────────────────────────────────────────
 function makePath(pts: [number, number][]): string {

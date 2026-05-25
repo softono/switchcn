@@ -8,8 +8,8 @@ import {
   useCallback,
   type ReactNode,
 } from "react";
-import { themesCatalog } from "./registry";
-import { loadTheme, type ThemeMeta, type ThemeTokens } from "./loader";
+import { themesCatalog } from "./theme-registry";
+import { loadTheme, type ThemeMeta, type ThemeTokens } from "./theme-loader";
 
 type ColorMode = "light" | "dark" | "system";
 

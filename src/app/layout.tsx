@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { ThemeProvider, applyThemeScript  } from "@/theme";
-import { getColorMode } from "@/theme/colorMode";
+import { ThemeProvider, applyThemeScript  } from "@/components/switchcn";
+import { getColorMode } from "@/components/switchcn/color-mode-server";
 
 export const metadata: Metadata = {
   title: "Theme Switcher — shadcn/ui Demo",

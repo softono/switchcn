@@ -1,4 +1,4 @@
-import { THEME_REGISTRY } from "./registry";
+import { THEME_REGISTRY } from "./theme-registry";
 
 export interface ThemeTokens {
   [key: string]: string | undefined;

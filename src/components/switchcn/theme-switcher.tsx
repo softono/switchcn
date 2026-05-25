@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { useTheme } from "../provider";
-import { themesCatalog as themes } from "../registry";
+import { useTheme } from "./theme-provider";
+import { themesCatalog as themes } from "./theme-registry";
 
 // ─── Colour swatch dot ────────────────────────────────────────────────────────
 function Swatch({ color }: { color: string | null }) {
