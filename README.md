@@ -29,7 +29,13 @@ This will automatically:
 
 If you'd rather run the demo project locally first, clone this repository and install the dependencies:
 
-### 2. Run the Development Server
+```bash
+git clone https://github.com/softono/switchcn.git
+cd switchcn
+npm install
+```
+
+### 3. Run the Development Server
 
 ```bash
 npm run dev
@@ -37,7 +43,7 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) to view the application in your browser.
 
-### 3. Production Build
+### 4. Production Build
 
 Build and optimize the production bundle:
 
@@ -45,6 +51,85 @@ Build and optimize the production bundle:
 npm run build
 npm run start
 ```
+
+---
+
+## 📦 Integration & Usage Guide
+
+Follow these simple steps to integrate Switchcn into your Next.js application with zero hydration errors and seamless server-side rendering:
+
+### 1. Configure the Root Layout (`src/app/layout.tsx`)
+
+To enable instant theme rendering on the server, eliminate flash of unstyled content (FOUC), and prevent React hydration mismatches:
+- Call `getColorMode()` in your asynchronous `RootLayout` server component to read preferred theme colors from cookies.
+- Inject `applyThemeScript` in a `<script>` tag inside `<head>` to execute immediately before hydration.
+- Wrap your page components with the `<ThemeProvider>`.
+
+```tsx
+import type { Metadata } from "next";
+import "./globals.css";
+import { ThemeProvider, applyThemeScript } from "@/components/switchcn";
+import { getColorMode } from "@/components/switchcn/color-mode-server";
+
+export const metadata: Metadata = {
+  title: "Theme Switcher — shadcn/ui Demo",
+  description: "A Next.js demo with a runtime tweakcn-style theme switcher and shadcn/ui components.",
+};
+
+export default async function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  // 1. Resolve preferred color mode on the server via cookies
+  const htmlClass = await getColorMode();
+
+  return (
+    <html lang="en" className={htmlClass}>
+      <head>
+        {/* 2. Apply theme preference immediately before hydration to prevent visual flashing */}
+        <script dangerouslySetInnerHTML={{ __html: applyThemeScript }} />
+      </head>
+      <body>
+        {/* 3. Wrap application content in the ThemeProvider */}
+        <ThemeProvider>{children}</ThemeProvider>
+      </body>
+    </html>
+  );
+}
+```
+
+### 2. Render the Theme Switcher (`src/app/page.tsx`)
+
+Import and render `<ThemeSwitcher />` anywhere inside your Client Components (such as headers, navigation bars, or setting panels):
+
+```tsx
+"use client";
+
+import { ThemeSwitcher } from "@/components/switchcn";
+
+export default function Navbar() {
+  return (
+    <nav className="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur-sm">
+      <div className="flex items-center justify-between px-4 h-12 max-w-[1150px] mx-auto">
+        <span className="text-sm font-semibold">My Application</span>
+        
+        {/* Render the switcher trigger */}
+        <ThemeSwitcher size="large" />
+      </div>
+    </nav>
+  );
+}
+```
+
+### Component Props
+
+| Prop | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `size` | `"small" \| "large"` | `"large"` | Determines the visual display variant of the trigger button. `small` displays an icon-only paint palette trigger; `large` displays the full information trigger. |
+
+---
+
 
 ## 🌟 Key Features
 
@@ -78,113 +163,6 @@ Traditional client-side theme engines cause layout flashes or hydration errors b
 2. On subsequent loads, the root Next.js Layout (an asynchronous Server Component) reads the cookies from the incoming headers.
 3. The server immediately renders the `<html>` element with the correct theme class.
 4. When React hydrates on the client, the DOM matches the server-rendered DOM *perfectly*, resulting in a fluid first-load experience with zero console errors.
-
----
-
-## 🛠️ Getting Started
-
-### 1. Quick Installation (Recommended)
-
-You can automatically install and configure all necessary SwitchCN files and themes directly into your existing React or Next.js project using our dedicated installer CLI:
-
-```bash
-npx add-switchcn
-```
-
-This will automatically:
-- Detect your framework and package manager.
-- Verify that Tailwind CSS v4 is configured.
-- Resolve the appropriate installation path (`src/components/switchcn` or `components/switchcn`).
-- Fetch the SwitchCN registry and download the core files, utilities, and curated themes.
-- Install any necessary dependencies using your active package manager (`npm`, `pnpm`, `yarn`, or `bun`).
-
-### 2. Manual Clone & Setup (Alternative)
-
-If you'd rather run the demo project locally first, clone this repository and install the dependencies:
-
-### 2. Run the Development Server
-
-```bash
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) to view the application in your browser.
-
-### 3. Production Build
-
-Build and optimize the production bundle:
-
-```bash
-npm run build
-npm run start
-```
-
----
-
-## 🎨 Theme Configuration
-
-Themes are represented as standard JSON configurations located in `src/theme/configs/`. Each theme defines its font-mappings, color swatches, and exact light/dark mode CSS tokens:
-
-```json
-{
-  "name": "caffeine",
-  "label": "Caffeine",
-  "swatches": [
-    "oklch(0.4341 0.0392 41.9938)",
-    "oklch(0.9821 0 0)",
-    "oklch(0.9310 0 0)",
-    "oklch(0.8822 0 0)"
-  ],
-  "tokens": {
-    "light": {
-      "--background": "oklch(0.9821 0 0)",
-      "--foreground": "oklch(0.2435 0 0)",
-      "--primary": "oklch(0.4341 0.0392 41.9938)",
-      "--primary-foreground": "oklch(1.0000 0 0)",
-      "--muted": "oklch(0.9521 0 0)",
-      "--muted-foreground": "oklch(0.5032 0 0)",
-      "--border": "oklch(0.8822 0 0)"
-    },
-    "dark": {
-      "--background": "oklch(0.1835 0.0150 41.9938)",
-      "--foreground": "oklch(0.9521 0 0)",
-      "--primary": "oklch(0.7200 0.0651 74.3695)",
-      "--primary-foreground": "oklch(0.1835 0.0150 41.9938)",
-      "--muted": "oklch(0.2521 0 0)",
-      "--muted-foreground": "oklch(0.7532 0 0)",
-      "--border": "oklch(0.3521 0 0)"
-    }
-  }
-}
-```
-
-Register new configurations dynamically inside the loader registry: `src/theme/registry.ts`.
-
----
-
-## 📦 Component Usage
-
-Import and render `<ThemeSwitcher />` anywhere in your Client Components:
-
-```tsx
-import { ThemeSwitcher } from "@/theme";
-
-export default function Header() {
-  return (
-    <header className="flex justify-between items-center px-6 h-16 border-b">
-      <Logo />
-      {/* Renders a beautiful compact paint-palette icon */}
-      <ThemeSwitcher size="small" />
-    </header>
-  );
-}
-```
-
-### Component Props
-
-| Prop | Type | Default | Description |
-| :--- | :--- | :--- | :--- |
-| `size` | `"small" \| "large"` | `"large"` | Determines the visual display variant of the trigger button. `small` displays an icon-only paint palette trigger; `large` displays the full information trigger. |
 
 ---
 
