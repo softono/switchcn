@@ -45,15 +45,24 @@ Traditional client-side theme engines cause layout flashes or hydration errors b
 
 ## 🛠️ Getting Started
 
-### 1. Installation
+### 1. Quick Installation (Recommended)
 
-Clone this repository and install the dependencies:
+You can automatically install and configure all necessary SwitchCN files and themes directly into your existing React or Next.js project using our dedicated installer CLI:
 
 ```bash
-git clone https://github.com/softono/switchcn.git
-cd switchcn
-npm install
+npx add-switchcn
 ```
+
+This will automatically:
+- Detect your framework and package manager.
+- Verify that Tailwind CSS v4 is configured.
+- Resolve the appropriate installation path (`src/components/switchcn` or `components/switchcn`).
+- Fetch the SwitchCN registry and download the core files, utilities, and curated themes.
+- Install any necessary dependencies using your active package manager (`npm`, `pnpm`, `yarn`, or `bun`).
+
+### 2. Manual Clone & Setup (Alternative)
+
+If you'd rather run the demo project locally first, clone this repository and install the dependencies:
 
 ### 2. Run the Development Server
 
