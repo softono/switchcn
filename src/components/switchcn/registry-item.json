@@ -1,0 +1,21 @@
+{
+  "dependencies": [],
+  "files": [
+    "color-mode-server.ts",
+    "index.ts",
+    "theme-loader.ts",
+    "theme-provider.tsx",
+    "theme-registry.ts",
+    "theme-switcher.tsx",
+    "themes/amber-minimal.json",
+    "themes/amethyst-haze.json",
+    "themes/bubblegum.json",
+    "themes/caffeine.json",
+    "themes/candyland.json",
+    "themes/claudeplus.json",
+    "themes/cosmic-night.json",
+    "themes/default.json",
+    "themes/rose-pine.json",
+    "themes/tokyo-night.json"
+  ]
+}
