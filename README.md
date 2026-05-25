@@ -8,6 +8,44 @@ A state-of-the-art dynamic runtime theme switching system built for Next.js 15/1
 
 ---
 
+## 🛠️ Getting Started
+
+### 1. Quick Installation (Recommended)
+
+You can automatically install and configure all necessary SwitchCN files and themes directly into your existing React or Next.js project using our dedicated installer CLI:
+
+```bash
+npx add-switchcn
+```
+
+This will automatically:
+- Detect your framework and package manager.
+- Verify that Tailwind CSS v4 is configured.
+- Resolve the appropriate installation path (`src/components/switchcn` or `components/switchcn`).
+- Fetch the SwitchCN registry and download the core files, utilities, and curated themes.
+- Install any necessary dependencies using your active package manager (`npm`, `pnpm`, `yarn`, or `bun`).
+
+### 2. Manual Clone & Setup (Alternative)
+
+If you'd rather run the demo project locally first, clone this repository and install the dependencies:
+
+### 2. Run the Development Server
+
+```bash
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) to view the application in your browser.
+
+### 3. Production Build
+
+Build and optimize the production bundle:
+
+```bash
+npm run build
+npm run start
+```
+
 ## 🌟 Key Features
 
 *   🚫 **Zero-Hydration-Error Architecture**: Built to perfectly sync client and server theme classes. Avoids using cheap tricks like `suppressHydrationWarning` by resolving preferred theme and color-mode through server cookie parsing.
