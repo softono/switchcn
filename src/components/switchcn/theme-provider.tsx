@@ -22,7 +22,7 @@ interface ThemeContextValue {
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
-function tokensToStyle(tokens: ThemeTokens): string {
+function tokensToStyle(tokens: Record<string, string | undefined>): string {
   return Object.entries(tokens)
     .filter((entry): entry is [string, string] => entry[1] !== undefined)
     .map(([k, v]) => {
@@ -72,17 +72,29 @@ export const applyThemeScript = `(function(){
       if(cached){
         var theme=JSON.parse(cached);
         var css=':root, body{';
-        for(var k in theme.light){
-          if(theme.light[k]!=null) {
-            var suffix = k.indexOf('font-') === 0 ? ' !important' : '';
-            css+='--'+k+':'+theme.light[k]+suffix+';';
+        if(theme.theme){
+          for(var k in theme.theme){
+            if(theme.theme[k]!=null) {
+              var suffix = k.indexOf('font-') === 0 ? ' !important' : '';
+              css+='--'+k+':'+theme.theme[k]+suffix+';';
+            }
+          }
+        }
+        if(theme.light){
+          for(var k in theme.light){
+            if(theme.light[k]!=null) {
+              var suffix = k.indexOf('font-') === 0 ? ' !important' : '';
+              css+='--'+k+':'+theme.light[k]+suffix+';';
+            }
           }
         }
         css+='}.dark, .dark body{';
-        for(var k in theme.dark){
-          if(theme.dark[k]!=null) {
-            var suffix = k.indexOf('font-') === 0 ? ' !important' : '';
-            css+='--'+k+':'+theme.dark[k]+suffix+';';
+        if(theme.dark){
+          for(var k in theme.dark){
+            if(theme.dark[k]!=null) {
+              var suffix = k.indexOf('font-') === 0 ? ' !important' : '';
+              css+='--'+k+':'+theme.dark[k]+suffix+';';
+            }
           }
         }
         css+='}';
@@ -161,18 +173,37 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
         const fontStyleId = "app-theme-fonts";
         let fontEl = document.getElementById(fontStyleId) as HTMLLinkElement | null;
-        if (theme.fonts && theme.fonts.length > 0) {
+        
+        const extractedFonts: string[] = [];
+        const fontKeys = ['font-sans', 'font-serif', 'font-mono'];
+        for (const key of fontKeys) {
+          const val = theme.cssVars.theme[key];
+          if (val) {
+            const first = val.split(',')[0].trim();
+            const cleaned = first.replace(/^['"]|['"]$/g, '');
+            const genericFallbacks = [
+              'sans-serif', 'serif', 'monospace', 'system-ui',
+              'ui-sans-serif', 'ui-serif', 'ui-monospace', 'cursive', 'fantasy',
+              '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial'
+            ];
+            if (cleaned && !genericFallbacks.includes(cleaned)) {
+              extractedFonts.push(cleaned);
+            }
+          }
+        }
+
+        if (extractedFonts.length > 0) {
           if (!fontEl) {
             fontEl = document.createElement("link");
             fontEl.id = fontStyleId;
             fontEl.rel = "stylesheet";
             document.head.appendChild(fontEl);
           }
-          const families = theme.fonts
+          const families = extractedFonts
             .map((f) => `family=${encodeURIComponent(f).replace(/%20/g, "+")}:wght@300;400;500;600;700`)
             .join("&");
           fontEl.href = `https://fonts.googleapis.com/css2?${families}&display=swap`;
-          localStorage.setItem("app-theme-fonts", JSON.stringify(theme.fonts));
+          localStorage.setItem("app-theme-fonts", JSON.stringify(extractedFonts));
         } else {
           if (fontEl) fontEl.remove();
           localStorage.removeItem("app-theme-fonts");
@@ -185,13 +216,20 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
           el.id = styleId;
           document.head.appendChild(el);
         }
-        el.textContent = `:root, body {\n${tokensToStyle(theme.light)}\n}\n.dark, .dark body {\n${tokensToStyle(theme.dark)}\n}`;
+        
+        const rootStyles = tokensToStyle({
+          ...theme.cssVars.theme,
+          ...theme.cssVars.light
+        });
+        const darkStyles = tokensToStyle(theme.cssVars.dark);
+        el.textContent = `:root, body {\n${rootStyles}\n}\n.dark, .dark body {\n${darkStyles}\n}`;
 
         localStorage.setItem(
           "app-theme-vars",
           JSON.stringify({
-            light: theme.light,
-            dark: theme.dark,
+            theme: theme.cssVars.theme,
+            light: theme.cssVars.light,
+            dark: theme.cssVars.dark,
           })
         );
       } catch (err) {

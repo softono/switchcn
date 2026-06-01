@@ -47,11 +47,17 @@ export interface ThemeTokens {
   "font-serif"?: string;
   "font-mono"?: string;
   "tracking-normal"?: string;
+  "tracking-tighter"?: string;
+  "tracking-tight"?: string;
+  "tracking-wide"?: string;
+  "tracking-wider"?: string;
+  "tracking-widest"?: string;
+  "letter-spacing"?: string;
   "spacing"?: string;
 
   // Shadow tokens (optional)
-  "shadow-x"?: string;
-  "shadow-y"?: string;
+  "shadow-offset-x"?: string;
+  "shadow-offset-y"?: string;
   "shadow-blur"?: string;
   "shadow-spread"?: string;
   "shadow-opacity"?: string;
@@ -72,10 +78,16 @@ export interface ThemeMeta {
   swatches: string[];
 }
 
-export interface Theme extends ThemeMeta {
-  fonts?: string[];
-  light: ThemeTokens;
-  dark: ThemeTokens;
+export interface Theme {
+  $schema?: string;
+  name: string;
+  type: string;
+  css?: Record<string, any>;
+  cssVars: {
+    theme: Record<string, string | undefined>;
+    light: ThemeTokens;
+    dark: ThemeTokens;
+  };
 }
 
 /**
@@ -84,5 +96,5 @@ export interface Theme extends ThemeMeta {
 export async function loadTheme(name: string): Promise<Theme> {
   const entry = THEME_REGISTRY[name] || THEME_REGISTRY.default;
   const mod = await entry.load();
-  return mod.default as Theme;
+  return mod.default as unknown as Theme;
 }

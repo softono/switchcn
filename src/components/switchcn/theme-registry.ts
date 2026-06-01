@@ -4,6 +4,13 @@ export interface RegistryEntry extends ThemeMeta {
   load: () => Promise<{ default: Theme }>;
 }
 
+/**
+ * Swatches color array mapping keys:
+ * 1. cssVars.light.primary - Primary brand/accent color
+ * 2. cssVars.light.background - Light mode background color
+ * 3. cssVars.light.accent (or cssVars.light.secondary) - Light mode accent/hover highlight
+ * 4. cssVars.dark.background (or cssVars.dark.card / cssVars.light.border) - Dark mode/border contrast indicator
+ */
 export const THEME_REGISTRY: Record<string, RegistryEntry> = {
   default: {
     name: "default",
@@ -114,6 +121,17 @@ export const THEME_REGISTRY: Record<string, RegistryEntry> = {
       "oklch(0.8847 0.0069 97.3627)"
     ],
     load: () => import("./themes/claudeplus.json"),
+  },
+  claymorphism: {
+    name: "claymorphism",
+    label: "Claymorphism",
+    swatches: [
+      "oklch(0.5854 0.2041 277.1173)",
+      "oklch(0.9232 0.0026 48.7171)",
+      "oklch(0.9376 0.0260 321.9388)",
+      "oklch(0.2244 0.0074 67.4370)"
+    ],
+    load: () => import("./themes/claymorphism.json"),
   },
 };
 
