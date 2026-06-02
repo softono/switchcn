@@ -1,9 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-    allowedDevOrigins: [
-        "*.tribital.com",
-    ],
+  allowedDevOrigins: ["*.softono.com", "*.tribital.com"],
   /* config options here */
 };
 
