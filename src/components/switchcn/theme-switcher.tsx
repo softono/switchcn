@@ -21,7 +21,7 @@ export interface ThemeSwitcherProps {
 }
 
 export function ThemeSwitcher({ size = "small" }: ThemeSwitcherProps = {}) {
-  const { theme: activeTheme, colorMode, setTheme, setColorMode } = useTheme();
+  const { theme: activeTheme, themeMode, setTheme, setThemeMode } = useTheme();
 
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
@@ -62,8 +62,8 @@ export function ThemeSwitcher({ size = "small" }: ThemeSwitcherProps = {}) {
 
   const cycleColorMode = () => {
     const modes = ["light", "system", "dark"] as const;
-    const next = modes[(modes.indexOf(colorMode) + 1) % modes.length];
-    setColorMode(next);
+    const next = modes[(modes.indexOf(themeMode) + 1) % modes.length];
+    setThemeMode(next);
   };
 
   const modeIcon = {
@@ -161,9 +161,9 @@ export function ThemeSwitcher({ size = "small" }: ThemeSwitcherProps = {}) {
               e.stopPropagation();
               cycleColorMode();
             }}
-            title={`Mode: ${colorMode}`}
+            title={`Mode: ${themeMode}`}
           >
-            {modeIcon[colorMode]}
+            {modeIcon[themeMode]}
           </span>
           <svg width="14" height="14" viewBox="0 0 16 16" fill="none" className="text-muted-foreground">
             <path
@@ -210,10 +210,10 @@ export function ThemeSwitcher({ size = "small" }: ThemeSwitcherProps = {}) {
             <div className="flex gap-1">
               <button
                 onClick={cycleColorMode}
-                title={`Mode: ${colorMode} \u2014 click to cycle`}
+                title={`Mode: ${themeMode} \u2014 click to cycle`}
                 className="bg-transparent border-none cursor-pointer p-1 rounded-md text-muted-foreground flex"
               >
-                {modeIcon[colorMode]}
+                {modeIcon[themeMode]}
               </button>
               <button
                 onClick={shuffle}

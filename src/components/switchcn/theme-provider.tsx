@@ -11,13 +11,15 @@ import {
 import { themesCatalog } from "./theme-registry";
 import { loadTheme, type ThemeMeta, type ThemeTokens } from "./theme-loader";
 
-type ColorMode = "light" | "dark" | "system";
+type ThemeMode = "light" | "dark" | "system";
+type ColorMode = "light" | "dark";
 
 interface ThemeContextValue {
   theme: ThemeMeta;
+  themeMode: ThemeMode;
   colorMode: ColorMode;
   setTheme: (name: string) => void;
-  setColorMode: (mode: ColorMode) => void;
+  setThemeMode: (mode: ThemeMode) => void;
 }
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
@@ -106,16 +108,17 @@ export const applyThemeScript = `(function(){
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [themeName, setThemeName] = useState("default");
-  const [colorMode, setColorModeState] = useState<ColorMode>("system");
+  const [themeMode, setThemeModeState] = useState<ThemeMode>("system");
+  const [colorMode, setColorModeState] = useState<ColorMode>("light");
 
   useEffect(() => {
     const savedTheme = localStorage.getItem("app-theme");
     if (savedTheme) {
       setThemeName(savedTheme);
     }
-    const savedColorMode = localStorage.getItem("app-color-mode");
-    if (savedColorMode) {
-      setColorModeState(savedColorMode as ColorMode);
+    const savedThemeMode = localStorage.getItem("app-theme-mode") || localStorage.getItem("app-color-mode");
+    if (savedThemeMode) {
+      setThemeModeState(savedThemeMode as ThemeMode);
     }
   }, []);
 
@@ -124,6 +127,12 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     const updateSystemPref = (e: MediaQueryListEvent | MediaQueryList) => {
       const prefersDark = e.matches;
       document.cookie = `app-system-prefers-dark=${prefersDark}; path=/; max-age=31536000; SameSite=Lax`;
+      
+      if (themeMode === "system") {
+        const resolved: ColorMode = prefersDark ? "dark" : "light";
+        setColorModeState(resolved);
+        document.documentElement.classList.toggle("dark", prefersDark);
+      }
     };
     
     updateSystemPref(mediaQuery);
@@ -132,20 +141,17 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     return () => {
       mediaQuery.removeEventListener("change", updateSystemPref);
     };
-  }, []);
+  }, [themeMode]);
 
   useEffect(() => {
-    const savedColorMode = typeof window !== "undefined" ? localStorage.getItem("app-color-mode") : null;
-    if (savedColorMode && savedColorMode !== colorMode) {
-      return;
-    }
-
     const root = document.documentElement;
     const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    const isDark =
-      colorMode === "dark" || (colorMode === "system" && prefersDark);
-    root.classList.toggle("dark", isDark);
-  }, [colorMode]);
+    const resolved: ColorMode =
+      themeMode === "dark" || (themeMode === "system" && prefersDark) ? "dark" : "light";
+    
+    setColorModeState(resolved);
+    root.classList.toggle("dark", resolved === "dark");
+  }, [themeMode]);
 
   useEffect(() => {
     let active = true;
@@ -250,16 +256,16 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     document.cookie = `app-theme=${name}; path=/; max-age=31536000; SameSite=Lax`;
   }, []);
 
-  const setColorMode = useCallback((mode: ColorMode) => {
-    setColorModeState(mode);
-    localStorage.setItem("app-color-mode", mode);
-    document.cookie = `app-color-mode=${mode}; path=/; max-age=31536000; SameSite=Lax`;
+  const setThemeMode = useCallback((mode: ThemeMode) => {
+    setThemeModeState(mode);
+    localStorage.setItem("app-theme-mode", mode);
+    document.cookie = `app-theme-mode=${mode}; path=/; max-age=31536000; SameSite=Lax`;
   }, []);
 
   const theme = themesCatalog.find((t) => t.name === themeName) ?? themesCatalog[0];
 
   return (
-    <ThemeContext.Provider value={{ theme, colorMode, setTheme, setColorMode }}>
+    <ThemeContext.Provider value={{ theme, themeMode, colorMode, setTheme, setThemeMode }}>
       {children}
     </ThemeContext.Provider>
   );
